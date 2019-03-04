@@ -19,7 +19,7 @@ defmodule Rumbl.Repo do
 
   def get_by(module, params) do
     Enum.find(all(module), fn map ->
-      Enum.all?(params, fn {key, val} -> Map.get(map, key) == value end)
+      Enum.all?(params, fn {key, val} -> Map.get(map, key) == val end)
     end)
   end
 end
