@@ -2,7 +2,6 @@ defmodule Rumbl.AuthTest do
   use Rumbl.ConnCase
   alias Rumbl.Auth
 
-
   setup %{conn: conn} do
     conn =
       conn
@@ -13,8 +12,7 @@ defmodule Rumbl.AuthTest do
   end
 
   test "authenticate_user halts when no current_user exists",
-    %{conn: conn} do
-      
+       %{conn: conn} do
     conn =
       conn
       |> Auth.authenticate_user([])
@@ -23,8 +21,7 @@ defmodule Rumbl.AuthTest do
   end
 
   test "authenticate_user continues when the current_user exists",
-    %{conn: conn} do
-
+       %{conn: conn} do
     conn =
       conn
       |> assign(:current_user, %Rumbl.User{})
@@ -56,6 +53,7 @@ defmodule Rumbl.AuthTest do
 
   test "call places user from session into assigns", %{conn: conn} do
     user = insert_user()
+
     conn =
       conn
       |> put_session(:user_id, user.id)
@@ -64,28 +62,27 @@ defmodule Rumbl.AuthTest do
     assert conn.assigns.current_user.id == user.id
   end
 
-
   test "call with no session sets current_user assign to nil", %{conn: conn} do
     conn = Auth.call(conn, Repo)
     assert conn.assigns.current_user == nil
-  end 
+  end
 
   test "login with a valid username and pass", %{conn: conn} do
     user = insert_user(%{username: "me", password: "secret"})
-    {:ok, conn} =
-      Auth.login_by_username_and_pass(conn, "me", "secret", repo: Repo)
+    {:ok, conn} = Auth.login_by_username_and_pass(conn, "me", "secret", repo: Repo)
 
     assert conn.assigns.current_user.id == user.id
   end
 
   test "login with a not found user", %{conn: conn} do
     assert {:error, :not_found, _conn} =
-      Auth.login_by_username_and_pass(conn, "me", "secret", repo: Repo)
+             Auth.login_by_username_and_pass(conn, "me", "secret", repo: Repo)
   end
 
   test "login with password mismatch", %{conn: conn} do
     _ = insert_user(%{username: "me", password: "secret"})
+
     assert {:error, :unauthorized, _conn} =
-      Auth.login_by_username_and_pass(conn, "me", "wrong", repo: Repo)
+             Auth.login_by_username_and_pass(conn, "me", "wrong", repo: Repo)
   end
 end

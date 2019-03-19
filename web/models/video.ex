@@ -4,12 +4,13 @@ defmodule Rumbl.Video do
   @primary_key {:id, Rumbl.Permalink, autogenerate: true}
 
   schema "videos" do
-    field :url, :string
-    field :title, :string
-    field :description, :string
-    field :slug, :string
-    belongs_to :user, Rumbl.User, foreign_key: :user_id
-    belongs_to :category, Rumbl.Category
+    field(:url, :string)
+    field(:title, :string)
+    field(:description, :string)
+    field(:slug, :string)
+    belongs_to(:user, Rumbl.User, foreign_key: :user_id)
+    belongs_to(:category, Rumbl.Category)
+    has_many(:annotations, Rumbl.Annotation)
 
     timestamps()
   end
@@ -35,13 +36,13 @@ defmodule Rumbl.Video do
 
   defp slugfy(str) do
     str
-    |> String.downcase
+    |> String.downcase()
     |> String.replace(~r/[^\w-]+/u, "-")
   end
 end
 
 defimpl Phoenix.Param, for: Rumbl.Video do
-    def to_param(%{slug: slug, id: id}) do
-      "#{id}-#{slug}"
-    end
+  def to_param(%{slug: slug, id: id}) do
+    "#{id}-#{slug}"
+  end
 end

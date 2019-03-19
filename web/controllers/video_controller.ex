@@ -4,12 +4,11 @@ defmodule Rumbl.VideoController do
   alias Rumbl.Video
   alias Rumbl.Category
 
-  plug :load_categories when action in [:new, :create, :edit, :update]
-  plug :authenticate_user
+  plug(:load_categories when action in [:new, :create, :edit, :update])
+  plug(:authenticate_user)
 
   def action(conn, _) do
-    apply(__MODULE__, action_name(conn),
-          [conn, conn.params, conn.assigns.current_user])
+    apply(__MODULE__, action_name(conn), [conn, conn.params, conn.assigns.current_user])
   end
 
   def index(conn, _params, user) do
@@ -27,7 +26,8 @@ defmodule Rumbl.VideoController do
   end
 
   def create(conn, %{"video" => video_params}, user) do
-    changeset = user
+    changeset =
+      user
       |> build_assoc(:videos)
       |> Video.changeset(video_params)
 
@@ -36,6 +36,7 @@ defmodule Rumbl.VideoController do
         conn
         |> put_flash(:info, "Video created successfully.")
         |> redirect(to: video_path(conn, :show, video))
+
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -61,6 +62,7 @@ defmodule Rumbl.VideoController do
         conn
         |> put_flash(:info, "Video updated successfully.")
         |> redirect(to: video_path(conn, :show, video))
+
       {:error, changeset} ->
         render(conn, "edit.html", video: video, changeset: changeset)
     end
@@ -83,9 +85,10 @@ defmodule Rumbl.VideoController do
   defp load_categories(conn, _) do
     query =
       Category
-      |> Category.alphabetical
-      |> Category.names_and_ids
-    categories = Repo.all query
+      |> Category.alphabetical()
+      |> Category.names_and_ids()
+
+    categories = Repo.all(query)
     assign(conn, :categories, categories)
   end
 end

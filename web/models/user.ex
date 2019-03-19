@@ -7,6 +7,7 @@ defmodule Rumbl.User do
     field(:password, :string, virtual: true)
     field(:password_hash, :string)
     has_many(:videos, Rumbl.Video)
+    has_many(:annotations, Rumbl.Annotation)
 
     timestamps()
   end
@@ -32,6 +33,7 @@ defmodule Rumbl.User do
     case changeset do
       %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
         put_change(changeset, :password_hash, Comeonin.Bcrypt.hashpwsalt(pass))
+
       _ ->
         changeset
     end

@@ -8,7 +8,7 @@ defmodule Rumbl.CategoryRepoTest do
     Repo.insert!(%Category{name: "b"})
 
     query = Category |> Category.alphabetical()
-    query = from c in query, select: c.name
+    query = from(c in query, select: c.name)
     assert Repo.all(query) == ~w(a b c)
   end
 end

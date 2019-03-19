@@ -18,7 +18,6 @@ defmodule Rumbl.Permalink do
     :error
   end
 
-
   def dump(integer) when is_integer(integer) do
     {:ok, integer}
   end

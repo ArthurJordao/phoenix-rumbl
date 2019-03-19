@@ -14,8 +14,10 @@ defmodule Rumbl.Auth do
     cond do
       user = conn.assigns[:current_user] ->
         put_current_user(conn, user)
+
       user = user_id && repo.get(Rumbl.User, user_id) ->
         put_current_user(conn, user)
+
       true ->
         assign(conn, :current_user, nil)
     end
@@ -35,8 +37,10 @@ defmodule Rumbl.Auth do
     cond do
       user && checkpw(given_pass, user.password_hash) ->
         {:ok, login(conn, user)}
+
       user ->
         {:error, :unauthorized, conn}
+
       true ->
         dummy_checkpw()
         {:error, :not_found, conn}
