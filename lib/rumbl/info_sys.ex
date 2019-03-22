@@ -43,8 +43,10 @@ defmodule Rumbl.InfoSys do
       {:results, ^query_ref, results} ->
         Process.demonitor(monitor_ref, [:flush])
         await_result(tail, results ++ acc, timeout)
+
       {:DOWN, ^monitor_ref, :process, ^pid, _reason} ->
         await_result(tail, acc, timeout)
+
       :timedout ->
         kill(pid, monitor_ref)
         await_result(tail, acc, 0)
@@ -66,6 +68,7 @@ defmodule Rumbl.InfoSys do
 
   defp cleanup(timer) do
     :erlang.cancel_timer(timer)
+
     receive do
       :timeout -> :ok
     after
